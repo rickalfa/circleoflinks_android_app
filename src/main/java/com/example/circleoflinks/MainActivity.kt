@@ -67,12 +67,9 @@ class MainActivity : AppCompatActivity() {
 
             val intencionViewLoginAct = Intent(this, LoginActivity::class.java);
 
-            intencionViewLoginAct.putExtra("mensaje", texto_mensaje);
-
+            intencionViewLoginAct.putExtra("mensaje", "Circle of links");
 
             startActivity(intencionViewLoginAct);
-
-
 
         }
 

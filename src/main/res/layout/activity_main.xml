@@ -10,21 +10,32 @@
         android:id="@+id/textviewmain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Welcome ¡"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.455"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.306" />
+        app:layout_constraintVertical_bias="0.811" />
 
     <Button
         android:id="@+id/button_start_login"
         android:layout_width="140dp"
         android:layout_height="40dp"
-        android:layout_marginEnd="148dp"
-        android:layout_marginBottom="220dp"
-        android:text="Access"
+        android:layout_marginEnd="144dp"
+        android:layout_marginBottom="76dp"
+        android:text="Start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="339dp"
+        android:layout_height="530dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/circle_of_links" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
