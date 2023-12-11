@@ -12,9 +12,11 @@ import android.widget.TextView
 import com.example.circleoflinks.MainActivity
 import com.example.circleoflinks.activitys.ContentMainActivity
 import com.example.circleoflinks.databinding.ActivityLoginBinding
-import com.example.circleoflinks.models.ModelApiService
 
-import com.example.circleoflinks.config.ConfigApp
+
+import com.example.circleoflinks.models.ModelApiService
+import com.example.circleoflinks.models.RetrofitRequest
+import com.example.circleoflinks.models.SharedDates
 
 
 import kotlinx.coroutines.CoroutineScope
@@ -34,11 +36,12 @@ import kotlin.concurrent.thread
 class LoginActivity : AppCompatActivity() {
 
     private val responseLogin: String = "";
-    private val ConApp = ConfigApp();
 
     private var responseRe: String = "";
 
+    private var RetroReques = RetrofitRequest();
 
+    private var SharedDatesUser = SharedDates();
 
     // Binding creamos una vinculacion de vista para cargar el layout y acceder a sus componentes
     private lateinit var binding:ActivityLoginBinding
@@ -78,7 +81,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initSession(UserjsonObject: JSONObject)
     {
-        val keyshared: Boolean = this.loadkeySharedExist("dateuser");
+        val keyshared: Boolean = loadkeySharedExist("dateuser");
 
         if (keyshared){
 
@@ -97,6 +100,8 @@ class LoginActivity : AppCompatActivity() {
 
         Log.v("STATE USER : ", state_user.getString("status_user_id").toString());
 
+
+        /// comprovamos el state_user si es Free = 1, pro = 2, suspend = 3 provedor = 4
         val  status_user : Int= state_user.getString("status_user_id").toInt();
 
         if (status_user == 1){
@@ -114,9 +119,29 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
+    public fun loadkeySharedExist(key_shared: String): Boolean{
+
+        var respon: Boolean = false;
+        val sharedPref : SharedPreferences = getSharedPreferences("usersessiondate",Context.MODE_PRIVATE);
+
+        if(sharedPref.contains(key_shared)){
+
+            respon = true;
+
+        }else{
+            respon = false;
+        }
+
+
+        return respon;
+
+
+    }
+
+
     private fun saveDateUserSession(key_date :String ,UserjsonObject: JSONObject)
     {
-        val sharedDates: SharedPreferences = getPreferences( Context.MODE_PRIVATE );
+        val sharedDates: SharedPreferences = getSharedPreferences("usersessiondate", Context.MODE_PRIVATE );
 
         val editor = sharedDates.edit()
 
@@ -129,24 +154,7 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private fun loadkeySharedExist(key_shared: String): Boolean{
 
-        var respon: Boolean = false;
-        val sharedPref :SharedPreferences = getPreferences(Context.MODE_PRIVATE);
-
-        if(sharedPref.contains(key_shared)){
-
-            respon = true;
-
-        }else{
-            respon = false;
-        }
-
-
-    return respon;
-
-
-    }
 
 
     //metodo que abre otra activity
@@ -181,15 +189,7 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private fun getRetrofit():Retrofit{
 
-
-        return Retrofit.Builder()
-            .baseUrl(this.ConApp.getURLAPI())
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-
-    }
 
     // Corrutine estas Corrutinas son utilizadas para crear procesos  Una corrutina es un patrón de diseño de simultaneidad
     // que puedes usar en Android para simplificar el código que se ejecuta de forma asíncrona
@@ -206,8 +206,7 @@ class LoginActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            val call:String = getRetrofit().create(ModelApiService::class.java).getUsers(query);
-
+            val call:String = RetroReques.getRetrofit().create(ModelApiService::class.java).getUsers(query);
 
             runOnUiThread {
 
@@ -218,10 +217,8 @@ class LoginActivity : AppCompatActivity() {
 
                     Log.v("Mensaje API",call.toString());
 
-
                     // transformamos la respuesta String en un ObjectJSON
                      val jsonRes: JSONObject = JSONObject(call);
-
 
                     Log.v("Mensaje Response de Json ", jsonRes.getString("login-state"));
 
@@ -231,7 +228,6 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this@LoginActivity, "login : $responseRe",Toast.LENGTH_LONG).show();
 
                     if (responseRe.equals("success")){
-
 
 
                         this@LoginActivity.initSession(jsonRes);
